@@ -53,7 +53,7 @@ module.exports = class Auditory extends Plugin {
             audio.connect(analyser);
             const FFT_SIZES = [ 32, 64, 128, 256, 1028 ];
             const FFT_DIVIDE = [ 1e5, 1e5, 1e6, 1e6, 1e7 ];
-            analyser.fftSize = FFT_SIZES[this.settings.config.beastiness - 1];
+            analyser.fftSize = FFT_SIZES[(this.settings.config.beastiness || 1) - 1];
             let bg = document.querySelector('.channels-Ie2l6A > .container-2Thooq:not(#powercord-spotify-modal)');
 
             const hexToRGB = (hex) => {
@@ -62,7 +62,7 @@ module.exports = class Auditory extends Plugin {
                 g: (bigint >> 8) & 255,
                 b: bigint & 255 };
             };
-            const customColor = hexToRGB(this.settings.config.color.replace('#', '')) || hexToRGB('ef5350');
+            const customColor = hexToRGB((this.settings.config.color || '').replace('#', '')) || hexToRGB('ef5350');
 
             // Find the container to change the style
             const findElement = setInterval(() => {
@@ -79,7 +79,7 @@ module.exports = class Auditory extends Plugin {
               analyser.getByteFrequencyData(dataArray);
               const amount = dataArray.reduce((a, b) => a + b);
               const xDFT_psd = Math.abs(amount ** 2);
-              const amp = this.settings.config.mode === 'amp' ? xDFT_psd / FFT_DIVIDE[this.settings.config.beastiness - 1] : (amount / bufferLength) / 2;
+              const amp = this.settings.config.mode === 'amp' ? xDFT_psd / FFT_DIVIDE[(this.settings.config.beastiness || 1) - 1] : (amount / bufferLength) / 2;
 
               const defaultColors = {
                 r: 32,
@@ -96,7 +96,7 @@ module.exports = class Auditory extends Plugin {
                 bg.style.boxShadow = `0px 0px ${10 + (amp / 10)}px 0px ${bg.style.background}`;
                 bg.style['z-index'] = 1;
               }
-            }, 1000 / (15 * (this.settings.config.beastiness * 2)));
+            }, 1000 / (15 * ((this.settings.config.beastiness || 1) * 2)));
             this.intervals = [ style, findElement ];
           } catch (e) {
             console.error(e);

@@ -39,11 +39,11 @@ module.exports = class Settings extends React.Component {
           onValueChange={(e) => this._set('beastiness', e)}
         />
 
-        <FormTitle>Brightness</FormTitle>
+        <FormTitle style={{ marginTop: '32px' }}>Brightness</FormTitle>
         <Slider
           defaultValue={this.state.brightness || 1}
           handleSize={10}
-          style={{ marginTop: '32px' }}
+          style={{ marginTop: '16px' }}
           stickToMarkers={false}
           equidistance={true}
           minValue={1}

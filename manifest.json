@@ -1,6 +1,6 @@
 {
   "name": "Auditory",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "Audio visualizer for Discord that appears in the user modal in the bottom left. Please be aware this plugin will listen to the audio of your main output device whilst it is enabled.",
   "author": "Nevulo#0007",
   "license": "MIT",

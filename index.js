@@ -48,12 +48,17 @@ module.exports = class Auditory extends Plugin {
             const audioCtx = new AudioContext();
             const audio = audioCtx.createMediaStreamSource(stream);
 
+            const brightness = this.settings.get('brightness');
+            const beastiness = this.settings.get('beastiness');
+            const color = this.settings.get('color');
+            const mode = this.settings.get('mode');
+
             // Create an analyser
             const analyser = audioCtx.createAnalyser();
             audio.connect(analyser);
-            const FFT_SIZES = [ 32, 64, 128, 256, 1028 ];
+            const FFT_SIZES = [ 32, 64, 128, 256, 1024 ];
             const FFT_DIVIDE = [ 1e5, 1e5, 1e6, 1e6, 1e7 ];
-            analyser.fftSize = FFT_SIZES[(this.settings.config.beastiness || 1) - 1];
+            analyser.fftSize = FFT_SIZES[(beastiness || 1) - 1];
             let bg = document.querySelector('.channels-Ie2l6A > .container-2Thooq:not(#powercord-spotify-modal)');
 
             const hexToRGB = (hex) => {
@@ -62,7 +67,7 @@ module.exports = class Auditory extends Plugin {
                 g: (bigint >> 8) & 255,
                 b: bigint & 255 };
             };
-            const customColor = hexToRGB((this.settings.config.color || '').replace('#', '')) || hexToRGB('ef5350');
+            const customColor = hexToRGB((color || '').replace('#', '')) || hexToRGB('ef5350');
 
             // Find the container to change the style
             const findElement = setInterval(() => {
@@ -79,7 +84,7 @@ module.exports = class Auditory extends Plugin {
               analyser.getByteFrequencyData(dataArray);
               const amount = dataArray.reduce((a, b) => a + b);
               const xDFT_psd = Math.abs(amount ** 2);
-              const amp = this.settings.config.mode === 'amp' ? xDFT_psd / FFT_DIVIDE[(this.settings.config.beastiness || 1) - 1] : (amount / bufferLength) / 2;
+              const amp = mode === 'amp' ? xDFT_psd / FFT_DIVIDE[(beastiness || 1) - 1] : (amount / bufferLength) / 2;
 
               const defaultColors = {
                 r: 32,
@@ -89,14 +94,14 @@ module.exports = class Auditory extends Plugin {
               if (!amp) {
                 bg.style.background = `rgba(${defaultColors.r}, ${defaultColors.g}, ${defaultColors.b}, .3)`;
               } else {
-                bg.style.background = `rgba(${customColor.r}, ${customColor.g}, ${customColor.b}, ${0.1 * (amp / 2 / (100.1 - (this.settings.config.brightness || 0.1))).toString()})`;
+                bg.style.background = `rgba(${customColor.r}, ${customColor.g}, ${customColor.b}, ${0.1 * (amp / 2 / (100.1 - (brightness || 0.1))).toString()})`;
               }
 
-              if (this.settings.config.beastiness > 1) {
+              if (beastiness > 1) {
                 bg.style.boxShadow = `0px 0px ${10 + (amp / 10)}px 0px ${bg.style.background}`;
                 bg.style['z-index'] = 1;
               }
-            }, 1000 / (15 * ((this.settings.config.beastiness || 1) * 2)));
+            }, 1000 / (15 * ((beastiness || 1) * 2)));
             this.intervals = [ style, findElement ];
           } catch (e) {
             console.error(e);

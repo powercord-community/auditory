@@ -1,5 +1,5 @@
 const { React, getModuleByDisplayName } = require('powercord/webpack');
-const { TextInput } = require('powercord/components/settings');
+const { TextInput, SwitchItem } = require('powercord/components/settings');
 
 module.exports = class Settings extends React.Component {
   constructor (props) {
@@ -11,7 +11,9 @@ module.exports = class Settings extends React.Component {
       beastiness: get('beastiness', 1),
       mode: get('mode', 'amp'),
       color: get('color', null),
-      brightness: get('brightness', 1)
+      brightness: get('brightness', 1),
+      important: get('important', false),
+      defaultcolor: get('defaultcolor', '')
     };
   }
 
@@ -77,11 +79,28 @@ module.exports = class Settings extends React.Component {
         >
         </RadioGroup>
 
-        <FormTitle style={{ marginTop: '32px' }}>Color</FormTitle>
-        <FormText type='description'>Enter a hex code (eg. #31fa41)</FormText>
+        <FormTitle style={{ marginTop: '32px' }}>Styling</FormTitle>
+        <SwitchItem
+          note='This ensures that Auditory styling and effects take priority over themes and other CSS that affect the user container.'
+          value={this.state.important || false}
+          onChange={() => this._set('important')}
+        >Override any existing styling</SwitchItem>
+
+        <FormTitle>Visualizer Color</FormTitle>
+
         <TextInput
           defaultValue={this.state.color || ''}
+          placeholder='Enter a hex code (eg. #31fa41)'
           onChange={(e) => this._set('color', e)}
+        />
+        <FormTitle>Idle Color (when no audio is playing)</FormTitle>
+        <FormText type='description'>
+          Leave this blank to default to the Discord grey.
+        </FormText>
+        <TextInput
+          defaultValue={this.state.defaultcolor || ''}
+          placeholder='Enter a hex code (eg. #31fa41)'
+          onChange={(e) => this._set('defaultcolor', e)}
         />
       </div>
     );

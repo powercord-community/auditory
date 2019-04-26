@@ -1,9 +1,5 @@
 const { React, getModuleByDisplayName } = require('powercord/webpack');
 const { TextInput } = require('powercord/components/settings');
-const Slider = getModuleByDisplayName('Slider');
-const RadioGroup = getModuleByDisplayName('RadioGroup');
-const FormTitle = getModuleByDisplayName('FormTitle');
-const FormText = getModuleByDisplayName('FormText');
 
 module.exports = class Settings extends React.Component {
   constructor (props) {
@@ -19,7 +15,20 @@ module.exports = class Settings extends React.Component {
     };
   }
 
+  async componentDidMount () {
+    this.setState({
+      Slider: await getModuleByDisplayName('Slider'),
+      RadioGroup: await getModuleByDisplayName('RadioGroup'),
+      FormTitle: await getModuleByDisplayName('FormTitle'),
+      FormText: await getModuleByDisplayName('FormText')
+    });
+  }
+
   render () {
+    if (!this.state.Slider) {
+      return null;
+    }
+    const { Slider, RadioGroup, FormTitle, FormText } = this.state;
     return (
       <div>
         <FormTitle>Performance</FormTitle>

@@ -52,6 +52,8 @@ module.exports = class Auditory extends Plugin {
             const beastiness = this.settings.get('beastiness');
             const color = this.settings.get('color');
             const mode = this.settings.get('mode');
+            const important = this.settings.get('important', false);
+            const defaultcolor = this.settings.get('defaultcolor', '#202225');
 
             // Create an analyser
             const analyser = audioCtx.createAnalyser();
@@ -68,6 +70,7 @@ module.exports = class Auditory extends Plugin {
                 b: bigint & 255 };
             };
             const customColor = hexToRGB((color || '').replace('#', '')) || hexToRGB('ef5350');
+            const customBGColor = hexToRGB((defaultcolor || '').replace('#', '')) || hexToRGB('202225');
 
             // Find the container to change the style
             const findElement = setInterval(() => {
@@ -86,19 +89,18 @@ module.exports = class Auditory extends Plugin {
               const xDFT_psd = Math.abs(amount ** 2);
               const amp = mode === 'amp' ? xDFT_psd / FFT_DIVIDE[(beastiness || 1) - 1] : (amount / bufferLength) / 2;
 
-              const defaultColors = {
-                r: 32,
-                g: 34,
-                b: 37
-              };
               if (!amp) {
-                bg.style.background = `rgba(${defaultColors.r}, ${defaultColors.g}, ${defaultColors.b}, .3)`;
+                bg.setAttribute('style', `background: rgba(${customBGColor.r}, ${customBGColor.g}, ${customBGColor.b}, 0.3)`);
               } else {
-                bg.style.background = `rgba(${customColor.r}, ${customColor.g}, ${customColor.b}, ${0.1 * (amp / 2 / (100.1 - (brightness || 0.1))).toString()})`;
+                bg.setAttribute('style', `background: rgba(${customColor.r}, ${customColor.g}, ${customColor.b}, ${0.1 * (amp / 2 / (100.1 - (brightness || 0.1))).toString()}) ${important ? '!important' : ''}`);
               }
 
               if (beastiness > 1) {
-                bg.style.boxShadow = `0px 0px ${10 + (amp / 10)}px 0px ${bg.style.background}`;
+                if (!amp) {
+                  bg.style.boxShadow = `0px 0px ${10 + (amp / 10)}px 0px rgba(${customBGColor.r}, ${customBGColor.g}, ${customBGColor.b}, .3)`;
+                } else {
+                  bg.style.boxShadow = `0px 0px ${10 + (amp / 10)}px 0px rgba(${customColor.r}, ${customColor.g}, ${customColor.b}, .3)`;
+                }
                 bg.style['z-index'] = 1;
               }
             }, 1000 / (15 * ((beastiness || 1) * 2)));

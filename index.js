@@ -28,7 +28,7 @@ module.exports = class Auditory extends Plugin {
 
   startVisualizer () {
     const { desktopCapturer } = require('electron');
-    desktopCapturer.getSources({ types: [ 'window', 'screen' ] }).then(async sources => {
+    desktopCapturer.getSources({ types: [ 'window', 'screen' ] }, async (_, sources) => {
       for (const source of sources) {
         if (source.name.includes('Discord')) {
           try {

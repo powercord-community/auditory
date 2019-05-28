@@ -97,9 +97,9 @@ module.exports = class Auditory extends Plugin {
 
               if (beastiness > 1) {
                 if (!amp) {
-                  bg.style.boxShadow = `0px 0px ${10 + (amp / 10)}px 0px rgba(${customBGColor.r}, ${customBGColor.g}, ${customBGColor.b}, .3)`;
+                  bg.style.boxShadow = `0px 0px ${10 + (amp / 10)}px 0px ${bg.style.background}`;
                 } else {
-                  bg.style.boxShadow = `0px 0px ${10 + (amp / 10)}px 0px rgba(${customColor.r}, ${customColor.g}, ${customColor.b}, .3)`;
+                  bg.style.boxShadow = `0px 0px ${10 + (amp / 10)}px 0px ${bg.style.background}`;
                 }
                 bg.style['z-index'] = 1;
               }

@@ -28,7 +28,7 @@ module.exports = class Auditory extends Plugin {
 
   startVisualizer () {
     const { desktopCapturer } = require('electron');
-    desktopCapturer.getSources({ types: [ 'window', 'screen' ] }, async (_, sources) => {
+    desktopCapturer.getSources({ types: [ 'window', 'screen' ] }).then(async sources => {
       for (const source of sources) {
         if (source.name.includes('Discord')) {
           try {
@@ -61,7 +61,7 @@ module.exports = class Auditory extends Plugin {
             const FFT_SIZES = [ 32, 64, 128, 256, 1024 ];
             const FFT_DIVIDE = [ 1e5, 1e5, 1e6, 1e6, 1e7 ];
             analyser.fftSize = FFT_SIZES[(beastiness || 1) - 1];
-            let bg = document.querySelector('.channels-Ie2l6A > .container-2Thooq:not(#powercord-spotify-modal)');
+            let bg = document.querySelector('.channels-Ie2l6A > .container-3baos1:not(#powercord-spotify-modal)');
 
             const hexToRGB = (hex) => {
               const bigint = parseInt(hex, 16);
@@ -74,7 +74,7 @@ module.exports = class Auditory extends Plugin {
 
             // Find the container to change the style
             const findElement = setInterval(() => {
-              bg = document.querySelector('.channels-Ie2l6A > .container-2Thooq:not(#powercord-spotify-modal)');
+              bg = document.querySelector('.channels-Ie2l6A > .container-3baos1:not(#powercord-spotify-modal)');
             }, 1000);
 
             // Perform style changes

@@ -48,12 +48,16 @@ module.exports = class Auditory extends Plugin {
             const audioCtx = new AudioContext();
             const audio = audioCtx.createMediaStreamSource(stream);
 
-            const brightness = this.settings.get('brightness');
-            const beastiness = this.settings.get('beastiness');
-            const color = this.settings.get('color');
-            const mode = this.settings.get('mode');
+            const brightness = this.settings.get('brightness', 50);
+            let beastiness = this.settings.get('beastiness', 1);
+            const color = this.settings.get('color', '#ffffff');
+            const mode = this.settings.get('mode', 'amp');
             const important = this.settings.get('important', false);
             const defaultcolor = this.settings.get('defaultcolor', '#202225');
+
+            if (beastiness < 0 || beastiness > 5) {
+              beastiness = 2; // default performance value
+            }
 
             // Create an analyser
             const analyser = audioCtx.createAnalyser();

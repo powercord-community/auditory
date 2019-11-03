@@ -1,6 +1,7 @@
 const { Plugin } = require('powercord/entities');
 const { React } = require('powercord/webpack');
 const Settings = require('./Settings');
+const { resolve } = require('path');
 
 module.exports = class Auditory extends Plugin {
   startPlugin () {
@@ -13,6 +14,7 @@ module.exports = class Auditory extends Plugin {
           settings: this.settings
         })
     );
+    this.loadCSS(resolve(__dirname, 'style.scss'));
   }
 
   reload () {
@@ -52,6 +54,7 @@ module.exports = class Auditory extends Plugin {
             let beastiness = this.settings.get('beastiness', 1);
             const color = this.settings.get('color', '#ffffff');
             const mode = this.settings.get('mode', 'amp');
+            const pds = this.settings.get('pds', false);
             const important = this.settings.get('important', false);
             const defaultcolor = this.settings.get('defaultcolor', '#202225');
 
@@ -81,6 +84,9 @@ module.exports = class Auditory extends Plugin {
               bg = document.querySelector('.container-3baos1:not(#powercord-spotify-modal)');
             }, 1000);
 
+            let red = 255,
+              green = 0,
+              blue = 0;
             // Perform style changes
             const style = setInterval(() => {
               if (!bg) {
@@ -96,16 +102,37 @@ module.exports = class Auditory extends Plugin {
               if (!amp) {
                 bg.setAttribute('style', `background: rgba(${customBGColor.r}, ${customBGColor.g}, ${customBGColor.b}, 0.3)`);
               } else {
-                bg.setAttribute('style', `background: rgba(${customColor.r}, ${customColor.g}, ${customColor.b}, ${0.1 * (amp / 2 / (100.1 - (brightness || 0.1))).toString()}) ${important ? '!important' : ''}`);
+                if (pds) {
+                  if (red > 0 && blue === 0) {
+                    red--;
+                    green++;
+                  }
+                  if (green > 0 && red === 0) {
+                    green--;
+                    blue++;
+                  }
+                  if (blue > 0 && green === 0) {
+                    red++;
+                    blue--;
+                  }
+                  bg.setAttribute('style', `background: rgba(${red}, ${green}, ${blue}, ${0.1 * (amp / 2 / (100.1 - (brightness || 0.1))).toString()}) ${important ? '!important' : ''}`);
+                } else {
+                  bg.setAttribute('style', `background: rgba(${customColor.r}, ${customColor.g}, ${customColor.b}, ${0.1 * (amp / 2 / (100.1 - (brightness || 0.1))).toString()}) ${important ? '!important' : ''}`);
+                }
               }
 
               if (beastiness > 1) {
                 if (!amp) {
                   bg.style.boxShadow = `0px 0px ${10 + (amp / 10)}px 0px ${bg.style.background}`;
                 } else {
-                  bg.style.boxShadow = `0px 0px ${10 + (amp / 10)}px 0px ${bg.style.background}`;
+                  if (pds) {
+                    bg.style.boxShadow = `10px 10px ${10 + amp}px 30px ${bg.style.background}`;
+                    bg.style.position = 'relative';
+                    bg.style['z-index'] = 100;
+                  } else {
+                    bg.style.boxShadow = `0px 0px ${10 + (amp / 10)}px 0px ${bg.style.background}`;
+                  }
                 }
-                bg.style['z-index'] = 1;
               }
             }, 1000 / (15 * ((beastiness || 1) * 2)));
             this.intervals = [ style, findElement ];

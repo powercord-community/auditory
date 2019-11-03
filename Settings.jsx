@@ -21,6 +21,7 @@ module.exports = class Settings extends React.Component {
       color: get('color', null),
       brightness: get('brightness', 1),
       important: get('important', false),
+      pds: get('pds', false),
       defaultcolor: get('defaultcolor', '')
     });
   }
@@ -34,7 +35,7 @@ module.exports = class Settings extends React.Component {
       <div>
         <FormTitle>Performance</FormTitle>
         <FormText style={{ marginBottom: '32px' }} type='description'>
-          Changing this value will change the amount of detail the visualizer will pick up on, how often it updates and certain visual effects
+          Changing this value will change the amount of detail the visualizer will pick up on, how often it updates and certain visual effects. Higher values may increase CPU usage.
         </FormText>
         <Slider
           defaultValue={this.state.beastiness || 1}
@@ -101,6 +102,12 @@ module.exports = class Settings extends React.Component {
           placeholder='Enter a hex code (eg. #31fa41)'
           onChange={(e) => this._set('defaultcolor', e)}
         />
+
+        <SwitchItem
+          note={'Party and don\'t stop. (quite CPU intensive)'}
+          value={this.state.pds || false}
+          onChange={() => this._set('pds')}
+        >PDS Mode</SwitchItem>
       </div>
     );
   }

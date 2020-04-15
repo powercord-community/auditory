@@ -22,6 +22,7 @@ module.exports = class Settings extends React.Component {
       brightness: get('brightness', 1),
       important: get('important', false),
       pds: get('pds', false),
+      hideinfo: get('hideinfo', true),
       defaultcolor: get('defaultcolor', '')
     });
   }
@@ -33,6 +34,12 @@ module.exports = class Settings extends React.Component {
     const { Slider, RadioGroup, FormTitle, FormText } = this.state;
     return (
       <div>
+        <SwitchItem
+          note='All information and buttons in the user panel will be hidden and only shown if moused over. Your avatar will be moved to the center of the user panel and act as the visualizer, moving to the music'
+          value={this.state.hideinfo || false}
+          onChange={() => this._set('hideinfo')}
+        >Use avatar as visualizer <sup style={{ marginLeft: '4px' }} class="beta-3smTDE">New!</sup></SwitchItem>
+
         <FormTitle>Performance</FormTitle>
         <FormText style={{ marginBottom: '32px' }} type='description'>
           Changing this value will change the amount of detail the visualizer will pick up on, how often it updates and certain visual effects. Higher values may increase CPU usage.
